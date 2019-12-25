@@ -16,7 +16,7 @@ scp -r EdgeRouterScripts/UnblockByVpn 192.168.1.1:/config/user-data/UnblockByVpn
 ## Router
 ### 1. Set chmod
 ```sh
-chmod +x /config/user-data/UnblockByVpn/UnblockByVpn.sh
+chmod +x /config/user-data/UnblockByVpn/UnblockByVpn
 ```
 
 ### 2. Create file with list of domains
@@ -29,7 +29,7 @@ Add list of domains into **domains.conf**. One domain by line
 
 ### 4. Run
 ```sh
-/config/user-data/UnblockByVpn/UnblockByVpn.sh
+/config/user-data/UnblockByVpn/UnblockByVpn
 ```
 
 ## Enjoy
