@@ -1,17 +1,43 @@
-#!/bin/vbash
+# !/bin/vbash
 
 #######################################
 ## Intial settings                   ##
 #######################################
 
 SCRIPT_DIR=`pwd`
-FIREWALL_RULE_NAME='UnblockByVpn'
-FIREWALL_GROUP_DESCRIPTION='List of addresses for unblock via VPN'
-DOMAINS_PATH="$SCRIPT_DIR/domains.conf"
+FIREWALL_GROUP_DESCRIPTION='List of addresses'
+
+while getopts ":g:d:" opt; do
+  case $opt in
+    g) FIREWALL_RULE_NAME="$OPTARG"
+    ;;
+    d) DOMAINS_PATH="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+
+  case $OPTARG in
+    -*) echo "Option $opt needs a valid argument"
+    exit 1
+    ;;
+  esac
+done
 
 #######################################
 ## Check and read configuration file ##
 #######################################
+
+if [ -z "$FIREWALL_RULE_NAME" ]; then
+    echo "Firewall rule not set" >&2
+    exit 1
+fi
+
+if [ -z "$DOMAINS_PATH" ]; then
+    echo "Domain name not set" >&2
+    exit 1
+fi
 
 ## Check domain configuration file
 if [ ! -f "$DOMAINS_PATH" ]; then
@@ -19,13 +45,12 @@ if [ ! -f "$DOMAINS_PATH" ]; then
     exit 1
 fi
 
-
 ## Check count of domains in list
 DOMAINS_COUNT=$(wc -l "$DOMAINS_PATH" | awk '{print $1}')
 
 if [ "$DOMAINS_COUNT" -eq 0 ]; then
     echo "Domains list is empty" >&2
-    exit 0
+    exit 1
 fi
 
 #######################################
@@ -48,7 +73,6 @@ if [ "$CHECK_GROUP_RESULT" == "$GROUP_NOT_EXIST_MESSAGE" ]; then
     else
         echo "Firewall group [$FIREWALL_RULE_NAME] was created successfully" >&2
     fi
-    
 fi
 
 #######################################
